@@ -33,6 +33,20 @@ class RouteStore {
                 .apply();
     }
 
+    static void removeRoute(int index, Context context) {
+        ArrayList<Route> routes = getRoutes(context);
+
+        routes.remove(index);
+
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(routes);
+
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(ROUTES_KEY, jsonString)
+                .apply();
+    }
+
     static ArrayList<Route> getRoutes(Context context) {
         String routesString = PreferenceManager.getDefaultSharedPreferences(context).getString(ROUTES_KEY, "");
 

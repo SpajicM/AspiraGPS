@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
@@ -69,5 +72,38 @@ public class RoutesFragment extends ListFragment {
                 });
 
         alert.show();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> av, View v, final int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                alert.setMessage("Are you sure you want to delete this route record?");
+                alert.setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                RouteStore.removeRoute(position, getActivity());
+                                loadData();
+                                dialog.dismiss();
+
+                            }
+                        });
+
+                alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+                return true;
+            }
+        });
     }
 }
