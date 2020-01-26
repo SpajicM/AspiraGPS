@@ -301,7 +301,7 @@ public class LocationUpdatesService extends Service {
                 .setContentTitle("Servis!")
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(android.R.drawable.ic_menu_mylocation)
                 .setTicker(text)
                 .setWhen(System.currentTimeMillis());
 
