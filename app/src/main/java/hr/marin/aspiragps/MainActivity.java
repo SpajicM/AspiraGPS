@@ -98,6 +98,19 @@ public class MainActivity extends AppCompatActivity implements
         avgSpeedLabel = findViewById(R.id.averageSpeedLabel);
         distanceLabel = findViewById(R.id.distanceLabel);
 
+        // aspira kao default lokacija
+        mLocation = new Location("dummyprovider");
+        mLocation.setLongitude(43.5203518);
+        mLocation.setLongitude(16.4499524);
+
+        if (savedInstanceState != null) {
+            distance = savedInstanceState.getDouble("distance");
+            timeSeconds = savedInstanceState.getInt("timeSeconds");
+            mLocation = savedInstanceState.getParcelable("mLocation");
+
+            updateGUI();
+        }
+
 
         // Check that the user hasn't revoked permissions by going to Settings.
         if (RouteStore.requestingLocationUpdates(this)) {
@@ -107,6 +120,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putDouble("distance", distance);
+        outState.putInt("timeSeconds", timeSeconds);
+        outState.putParcelable("mLocation", mLocation);
+    }
 
     @Override
     protected void onStart() {
@@ -164,10 +184,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        // aspira kao default lokacija
-        LatLng aspira = new LatLng(43.5203518, 16.4499524);
-        map.moveCamera(CameraUpdateFactory.newLatLng(aspira));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(aspira, 15));
+        LatLng point = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLng(point));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
 
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.RED);
@@ -193,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements
         mService.removeLocationUpdates();
         Route finishedRoute = new Route(timeSeconds, distance, new Date(System.currentTimeMillis()));
         RouteStore.addRoute(finishedRoute, this);
-
         List<LatLng> points = gpsTrack.getPoints();
         points.clear();
         gpsTrack.setPoints(points);
@@ -315,15 +333,17 @@ public class MainActivity extends AppCompatActivity implements
         avgSpeedLabel.setText(Formatter.getAvgSpeedString(distance, timeSeconds));
 
         // update map
-        if(mLocation != null) {
+        if (mLocation != null && map != null) {
             LatLng point = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
 
             map.moveCamera(CameraUpdateFactory.newLatLng(point));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
         }
 
-        List<LatLng> points = mService.getPoints();
-        gpsTrack.setPoints(points);
+        if (mService != null) {
+            List<LatLng> points = mService.getPoints();
+            gpsTrack.setPoints(points);
+        }
     }
 
 
