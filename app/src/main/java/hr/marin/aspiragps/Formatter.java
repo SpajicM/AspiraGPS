@@ -25,7 +25,7 @@ class Formatter {
     }
 
     static String getDateTimeString(Date timestamp) {
-        SimpleDateFormat simpleDate =  new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        SimpleDateFormat simpleDate =  new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         return simpleDate.format(timestamp);
     }
