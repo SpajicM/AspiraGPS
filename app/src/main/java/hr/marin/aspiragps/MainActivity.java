@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // aspira kao default lokacija
         mLocation = new Location("dummyprovider");
-        mLocation.setLongitude(43.5203518);
+        mLocation.setLatitude(43.5203518);
         mLocation.setLongitude(16.4499524);
 
         if (savedInstanceState != null) {
